@@ -25,13 +25,13 @@ def load_data(file):
     data = pd.read_json(file)
     return data
 
-def plot_bands(data, title, channels = DEFAULT_CHANNELS, bands = DEFAULT_BANDS):
+def plot_bands(data, label, channels = DEFAULT_CHANNELS, bands = DEFAULT_BANDS):
     '''
     Plot the EEG band power over time for each channel for a given dataset.
     '''    
     # Initialize the subplots
     fig, axs = plt.subplots(len(bands), 1, figsize=(15, 10), sharex=True)
-    fig.suptitle('EEG Band Power over Time ({})'.format(title))
+    fig.suptitle('EEG Band Power over Time ({})'.format(label))
 
     # Define the X-axis values
     data_x_values = [i for i in range(data.shape[1])]
@@ -70,13 +70,13 @@ def plot_bands(data, title, channels = DEFAULT_CHANNELS, bands = DEFAULT_BANDS):
 
     plt.show()
 
-def plot_channel_bands(data1, data2, channel = DEFAULT_CHANNELS[0], bands = DEFAULT_BANDS):
+def plot_channel_bands(data1, data2, data1_label = "Dataset 1", data2_label = "Dataset 2", channel = DEFAULT_CHANNELS[0], bands = DEFAULT_BANDS):
     '''
     Plot the EEG band power over time for a channel from two datasets on the same axes for comparison.
     '''
     # Initialize the subplots
     fig, axs = plt.subplots(len(bands), 1, figsize=(15, 10), sharex=True)
-    fig.suptitle('EEG Band Power over Time ({})'.format(channel.capitalize()))
+    fig.suptitle('Overlayed EEG Band Power over Time ({})'.format(channel.capitalize()))
 
     # Define the X-axis values based on the shortest dataset
     num_time_points = min(data1.shape[1], data2.shape[1])
@@ -112,7 +112,7 @@ def plot_channel_bands(data1, data2, channel = DEFAULT_CHANNELS[0], bands = DEFA
         # Set the plot properties
         axs[index].set_title(band)
         axs[index].set_ylabel('Power')
-        axs[index].legend(['Dataset 1', 'Dataset 2'])
+        axs[index].legend([data1_label, data2_label])
 
         # Calculate the upper bound for Y-axis
         y_values = np.array(data1_y_values + data2_y_values)
@@ -184,7 +184,7 @@ def plot_band_differences(data1, data2, channels = DEFAULT_CHANNELS, bands = DEF
 
     plt.show()
 
-def plot_channel_band_ratios(data1, data2, band1="beta", band2="theta", channels=DEFAULT_CHANNELS):
+def plot_channel_band_ratios(data1, data2, data1_label = "Dataset 1", data2_label = "Dataset 2", band1="beta", band2="theta", channels=DEFAULT_CHANNELS):
     '''
     Plot the ratio of two bands over time for each channel between two datasets.
     '''
@@ -234,7 +234,7 @@ def plot_channel_band_ratios(data1, data2, band1="beta", band2="theta", channels
         # Set the plot properties
         axs[i].set_title(channels[i])
         axs[i].set_ylabel('Ratio')
-        axs[i].legend(['Dataset 1', 'Dataset 2'])
+        axs[i].legend([data1_label, data2_label])
 
         # Calculate the upper and lower bound based on the y values
         y_values = np.array(data1_ratio_values[i] + data2_ratio_values[i])
@@ -263,12 +263,13 @@ data_compare = load_data("treatment.json")
 # default values or change them to plot different channels and bands.
 channels = ['af7', 'af8', 'tp9', 'tp10']
 bands = ['delta', 'theta', 'alpha', 'beta', 'gamma']
+labels = ["Control", "Treatment"]
 
 # Call the functions below to plot the data as needed; Each plot will open in a
 # new window after the previous one is closed.
 
-plot_bands(data_base, "Control", channels, bands)
-plot_bands(data_compare, "Treatment", channels, bands)
-plot_channel_bands(data_base, data_compare, "tp9", bands)
+plot_bands(data_base, labels[0], channels, bands)
+plot_bands(data_compare, labels[1], channels, bands)
+plot_channel_bands(data_base, data_compare, labels[0], labels[1], "tp9", bands)
 plot_band_differences(data_base, data_compare, channels, bands)
-plot_channel_band_ratios(data_base, data_compare, "beta", "theta", channels)
+plot_channel_band_ratios(data_base, data_compare, labels[0], labels[1], "beta", "theta", channels)
