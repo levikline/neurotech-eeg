@@ -25,13 +25,13 @@ def load_data(file):
     data = pd.read_json(file)
     return data
 
-def plot_bands(data, channels = DEFAULT_CHANNELS, bands = DEFAULT_BANDS):
+def plot_bands(data, title, channels = DEFAULT_CHANNELS, bands = DEFAULT_BANDS):
     '''
     Plot the EEG band power over time for each channel for a given dataset.
     '''    
     # Initialize the subplots
     fig, axs = plt.subplots(len(bands), 1, figsize=(15, 10), sharex=True)
-    fig.suptitle('EEG Band Power over Time')
+    fig.suptitle('EEG Band Power over Time ({})'.format(title))
 
     # Define the X-axis values
     data_x_values = [i for i in range(data.shape[1])]
@@ -249,13 +249,13 @@ def plot_channel_band_ratios(data1, data2, band1="beta", band2="theta", channels
 #############################################
 
 # Available files:
-# - baseline.json
-# - alt-baseline.json
-# - experiment.json
+# - control.json
+# - control-alt.json
+# - treatment.json
 
 # Load the data from the files
-data_base = load_data("baseline.json")
-data_compare = load_data("experiment.json")
+data_base = load_data("control.json")
+data_compare = load_data("treatment.json")
 
 # Define the channels and bands to plot
 #
@@ -267,8 +267,8 @@ bands = ['delta', 'theta', 'alpha', 'beta', 'gamma']
 # Call the functions below to plot the data as needed; Each plot will open in a
 # new window after the previous one is closed.
 
-plot_bands(data_base, channels, bands)
-plot_bands(data_compare, channels, bands)
+plot_bands(data_base, "Control", channels, bands)
+plot_bands(data_compare, "Treatment", channels, bands)
 plot_channel_bands(data_base, data_compare, "tp9", bands)
 plot_band_differences(data_base, data_compare, channels, bands)
 plot_channel_band_ratios(data_base, data_compare, "beta", "theta", channels)
