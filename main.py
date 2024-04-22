@@ -249,13 +249,13 @@ def plot_channel_band_ratios(data1, data2, data1_label = "Dataset 1", data2_labe
 #############################################
 
 # Available files:
-# - control.json
-# - control-alt.json
-# - treatment.json
+# - data/control.json
+# - data/control-alt.json
+# - data/treatment.json
 
 # Load the data from the files
-data_base = load_data("control.json")
-data_compare = load_data("treatment.json")
+data_base = load_data("data/control.json")
+data_compare = load_data("data/treatment.json")
 
 # Define the channels and bands to plot
 #
